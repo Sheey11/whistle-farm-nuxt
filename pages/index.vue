@@ -1,0 +1,105 @@
+<template lang="pug">
+  .container
+    a-card.login-card(title="登录到微哨农场")
+      Logo(style="max-width: 50%; margin-bottom: 50px")
+      a-form.login-form(:model="formState")
+        a-form-item(ref="username" name="username")
+          a-input.username-input(placeholder="用户名" v-model:value="formState.userName" size="large" @change="refreshLoginButtonStatus")
+            template(slot="prefix")
+                user-outlined(type="user")
+        a-form-item(ref="password")
+          a-input-password.password-input(placeholder="密码" v-model:value="formState.password" size="large" @change="refreshLoginButtonStatus")
+            template(slot="prefix")
+                lock-outlined
+        a-form-item(ref="rememberme")
+          a-checkbox(v-model:checked="formState.rememberme" style="float: left") 记住我
+          a(style="float: right; margin-right: 0") 忘记密码
+        a-form-item
+          a-button(type="primary" style="width: 100%; margin-top: 20px" size="large" :disabled="!loginButtonEnabled" @click="login" :loading="loading") 登陆
+          a-button(type="link" style="width: 100%; margin-top: 0" @click="gotoRegister") 注册账号
+      FooterMini
+</template>
+
+<script>
+import { UserOutlined, LockOutlined } from '@ant-design/icons-vue'
+import { message } from 'ant-design-vue'
+
+export default {
+  components: {
+    UserOutlined,
+    LockOutlined
+  },
+  data () {
+    return {
+      formState: {
+        userName: '',
+        password: '',
+        rememberme: false
+      },
+      loginButtonEnabled: false,
+      loading: false
+    }
+  },
+  head () {
+    return {
+      title: 'WhistleFarm - 登陆'
+    }
+  },
+  methods: {
+    gotoRegister () {
+      this.$router.push('/register')
+    },
+    refreshLoginButtonStatus () {
+      const usernameValid = this.formState.userName !== ''
+      const passwordValid = this.formState.password !== ''
+      this.loginButtonEnabled = usernameValid && passwordValid
+    },
+    async login () {
+      try {
+        this.loading = true
+        await this.$auth.loginWith('local', {
+          data: {
+            username: this.formState.userName,
+            password: this.formState.password
+          }
+        })
+        this.$router.push('/admin')
+      } catch (e) {
+        if (e.response && e.response.data) {
+          message.error(e.response.data.msg)
+        } else {
+          message.error(e.message)
+        }
+      }
+      this.loading = false
+    }
+  }
+}
+</script>
+
+<style>
+.container {
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 200px;
+}
+
+.login-card {
+  margin: auto;
+  height: fit-content;
+  width: 600px;
+  text-align: center;
+}
+
+.login-form {
+  padding: 0 125px 30px 125px;
+  text-align: left;
+}
+
+.login-form > * {
+  margin: 10px;
+}
+</style>
