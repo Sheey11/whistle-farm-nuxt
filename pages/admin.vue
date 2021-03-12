@@ -224,7 +224,8 @@ export default {
       number,
       text,
       location,
-      questionnaireAnswer: {}
+      questionnaireAnswer: {},
+      selectedQuestionnaireId: ''
     }
   },
   head () {
@@ -263,6 +264,10 @@ export default {
           ans.push({
             multiAnswer: a
           })
+        } else if (typeof (a) === 'number') {
+          ans.push({
+            singleIntAnswer: a
+          })
         } else {
           ans.push({
             singleAnswer: a
@@ -275,10 +280,7 @@ export default {
           okText: '我确定',
           cancelText: '再想想',
           onOk () {
-            return new Promise((resolve, reject) => {
-              ctx.submitQuestionnaireAnswer(ans)
-              resolve()
-            })
+            return ctx.submitQuestionnaireAnswer(ans)
           }
         })
       } else {
@@ -286,7 +288,19 @@ export default {
       }
     },
     submitQuestionnaireAnswer (ans) {
-      return 123
+      return new Promise((resolve, reject) => {
+        this.$axios.put('https://api.farm.sheey.moe/whistle/questionnaire_answers', {
+          qid: this.selectedQuestionnaireId,
+          answers: ans
+        })
+          .then((res) => {
+            message.success('已保存')
+            resolve()
+          }).catch((e) => {
+            message.success('保存失败: ' + e.response.data.msg)
+            reject(e)
+          })
+      })
     },
     displayQuestionnaireInfo (qid) {
       const ctx = this
@@ -294,14 +308,34 @@ export default {
       this.questionnaireAnswer = {}
       this.questionnaireModalVisible = true
       this.questionnaireDetailLoading = true
-      this.$axios.get('https://api.farm.sheey.moe/whistle/questionnaires_detail?qid=' + qid)
-        .then((res) => {
-          ctx.questionnaireDetail = res.data
-          ctx.questionnaireDetailLoading = false
-        })
-        .catch((e) => {
-          ctx.questionnaireDetailLoading = false
-        })
+      this.selectedQuestionnaireId = qid
+
+      new Promise((resolve, reject) => {
+        this.$axios.get('https://api.farm.sheey.moe/whistle/questionnaires_detail?qid=' + qid)
+          .then((res) => {
+            ctx.questionnaireDetail = res.data
+            resolve()
+          })
+          .catch(e => reject(e))
+      }).then((resolve, reject) => {
+        this.$axios.get('https://api.farm.sheey.moe/whistle/questionnaire_answers?qid=' + qid)
+          .then((res) => {
+            for (let i = 0; i < res.data.answers.length; i++) {
+              const e = res.data.answers[i]
+              if (e.singleAnswer) {
+                ctx.questionnaireAnswer[i] = e.singleAnswer
+              } else if (e.singleIntAnswer) {
+                ctx.questionnaireAnswer[i] = e.singleIntAnswer
+              } else {
+                ctx.questionnaireAnswer[i] = e.multiAnswer
+              }
+            };
+            resolve()
+          })
+          .catch((e) => {
+            reject(e)
+          })
+      }).finally(() => { ctx.questionnaireDetailLoading = false })
     },
     logout () {
       this.$auth.logout()
