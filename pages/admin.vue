@@ -114,9 +114,19 @@
                   a-collapse-panel(key="3" header="自动填写配置")
                     a-form(:label-col="{ span: 2 }" :wrapper-col="{ span: 3 }")
                       a-form-item(label="开启自动填写")
-                        a-switch
+                        a-switch(v-model:value="questionnaireAutoFill")
                       a-form-item(label="自动填写时间")
-                        span 暂不支持自定义
+                        span 每天早上8点（暂不支持自定义）
+                  a-collapse-panel(key="4" header="填写历史")
+                    a-list(item-layout="horizontal" :data-source="questionnaireFillHistory")
+                      a-list-item(slot="renderItem" slot-scope="item, index" :key="index")
+                        .job-detail
+                          CheckCircleTwoTone(twoToneColor="#0ed10b" v-if="item.result == 2")
+                          CloseCircleTwoTone(twoToneColor="#ff0000" v-else-if="item.result == 1")
+                          span(style="margin: 0 10px;") {{ new Date(item.date).toLocaleString() }}
+                          p(v-if="item.result == 1" style="margin-left: 24px; color: #aaaaaa;") {{ item.exception }}
+                          p(v-if="item.result == 2" style="margin-left: 24px; color: #aaaaaa;") 自动填写成功
+
           h1(v-else style="") 请先绑定微哨账号
         .content-wrap.help(v-if="menuSelectedKey == '3'")
           a-card.card.shadow(title="Q&A")
@@ -169,7 +179,8 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   CloseCircleTwoTone,
-  CarryOutTwoTone
+  CarryOutTwoTone,
+  CheckCircleTwoTone
 } from '@ant-design/icons-vue'
 
 import { message, Modal } from 'ant-design-vue'
@@ -188,7 +199,8 @@ export default {
     MenuUnfoldOutlined,
     MenuFoldOutlined,
     CloseCircleTwoTone,
-    CarryOutTwoTone
+    CarryOutTwoTone,
+    CheckCircleTwoTone
   },
   data () {
     return {
@@ -225,7 +237,9 @@ export default {
       text,
       location,
       questionnaireAnswer: {},
-      selectedQuestionnaireId: ''
+      selectedQuestionnaireId: '',
+      questionnaireAutoFill: false,
+      questionnaireFillHistory: []
     }
   },
   head () {
@@ -334,6 +348,17 @@ export default {
           })
           .catch((e) => {
             reject(e)
+          })
+      }).then((resolve, reject) => {
+        this.$axios.get('https://api.farm.sheey.moe/whistle/autofill/results?qid=' + qid)
+          .then((res) => {
+            ctx.questionnaireFillHistory = res.data.result
+            resolve()
+          })
+      }).then((resolve, reject) => {
+        this.$axios.get('https://api.farm.sheey.moe/whistle/autofill/status?qid=' + qid)
+          .then((res) => {
+            ctx.questionnaireAutoFill = res.data.enabled
           })
       }).finally(() => { ctx.questionnaireDetailLoading = false })
     },
@@ -476,6 +501,10 @@ export default {
 .questionnaire {
   padding: 16px;
   min-height: 100%;
+}
+
+.job-detail {
+  padding: 10px;
 }
 
 @media screen and (max-width: 750px) {
