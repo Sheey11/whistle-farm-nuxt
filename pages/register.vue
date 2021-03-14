@@ -23,7 +23,7 @@
                 lock-outlined
           span.tip 再输一遍
         a-form-item(name="password" has-feedback)
-          a-input.invitation-code-input(placeholder="邀请码" v-model:value="formState.password" size="large")
+          a-input.invitation-code-input(placeholder="邀请码" v-model:value="formState.inviCode" size="large")
             template(slot="prefix")
                 ContainerOutlined
           span.tip 暂时开放注册，可以不填
@@ -61,7 +61,8 @@ export default {
         userName: '',
         email: '',
         password: '',
-        passwordRepeat: ''
+        passwordRepeat: '',
+        inviCode: ''
       },
       touModalVisible: false
     }
