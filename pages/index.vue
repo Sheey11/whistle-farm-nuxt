@@ -84,7 +84,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-bottom: 200px;
+  padding-bottom: 100px;
 }
 
 .login-card {
@@ -101,5 +101,24 @@ export default {
 
 .login-form > * {
   margin: 10px;
+}
+
+@media screen and (max-width: 500px) {
+  .login-form {
+    padding: 0 50px 30px 50px;
+    text-align: left;
+  }
+
+  .container {
+    padding: 0;
+    margin: auto;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .login-form {
+    padding: 0 0 30px 0;
+    text-align: left;
+  }
 }
 </style>

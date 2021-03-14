@@ -21,6 +21,12 @@
           a-input-password.password-repeat-input(placeholder="重复密码" v-model:value="formState.passwordRepeat" size="large")
             template(slot="prefix")
                 lock-outlined
+          span.tip 再输一遍
+        a-form-item(name="password" has-feedback)
+          a-input.invitation-code-input(placeholder="邀请码" v-model:value="formState.password" size="large")
+            template(slot="prefix")
+                ContainerOutlined
+          span.tip 暂时开放注册，可以不填
         a-form-item
           a-button(type="primary" style="width: 100%; margin-top: 20px" size="large" @click="register") 注册
           a-button(type="link" style="width: 100%; margin-top: 0" @click="gotoLogin") 已有账号？前往登陆
@@ -28,14 +34,15 @@
 </template>
 
 <script>
-import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons-vue'
+import { UserOutlined, LockOutlined, MailOutlined, ContainerOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 
 export default {
   components: {
     UserOutlined,
     LockOutlined,
-    MailOutlined
+    MailOutlined,
+    ContainerOutlined
   },
   data () {
     return {
@@ -57,6 +64,16 @@ export default {
       this.$router.push('/')
     },
     register () {
+      if (this.formState.username === '' || this.formState.email === '' || this.formState.password === '') {
+        message.error('搁这耍猴呢？')
+        return
+      }
+
+      if (this.formState.password !== this.formState.passwordRepeat) {
+        message.error('两次密码不一样(*╹▽╹*)')
+        return
+      }
+
       this.$axios.post('https://api.farm.sheey.moe/auth/register', {
         username: this.formState.userName,
         password: this.formState.password,
@@ -87,7 +104,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-bottom: 200px;
+  padding-bottom: 100px;
 }
 
 .register-card {
@@ -113,5 +130,24 @@ span.tip {
   color: #999;
   float: left;
   font-size: 12px;
+}
+
+@media screen and (max-width: 500px) {
+  .register-form {
+    padding: 0 50px 30px 50px;
+    text-align: left;
+  }
+
+  .container {
+    padding: 0;
+    margin: auto;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .register-form {
+    padding: 0 0 30px 0;
+    text-align: left;
+  }
 }
 </style>
