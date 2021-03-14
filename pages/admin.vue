@@ -55,6 +55,11 @@
                 tr
                   td.table-col-info 邮箱
                   td {{ this.$auth.loggedIn ? this.$auth.user.email : "" }}
+          a-card.card.shadow(title="消息通知")
+            p 绑定微信来接收打卡结果通知
+            p 当前绑定状态： {{ this.wxPusherBinded ? "已绑定" : "未绑定" }}
+            p(v-if="wxPusherBinded") Uid: {{ this.wxPusherUid }}
+            img(v-if="!wxPusherBinded" :src="wxQRCodeUrl" style="margin: 0 auto; height: 128px; width: 128px;")
           a-card.card.shadow(title="绑定微哨账号")
             p 如果绑定遇到问题，请查看左边的帮助中心。
             a-form(layout="horizontal" :label-col="labelCol" :wrapper-col="wrapperCol" style="height: fit-content;")
@@ -239,7 +244,10 @@ export default {
       questionnaireAnswer: {},
       selectedQuestionnaireId: '',
       questionnaireAutoFill: false,
-      questionnaireFillHistory: []
+      questionnaireFillHistory: [],
+      wxQRCodeUrl: '',
+      wxPusherBinded: false,
+      wxQRCodeUid: ''
     }
   },
   head () {
@@ -256,8 +264,21 @@ export default {
     if (!this.$auth.loggedIn) {
       this.$router.push('/')
     } else {
+      const ctx = this
+
       this.whistleUsername = this.$auth.user.whistle_username
       this.refreshWhistleUserInfo()
+      this.$axios.get('https://api.farm.sheey.moe/bindInfo')
+        .then((res) => {
+          ctx.wxPusherBinded = res.data.bind
+          ctx.wxPusherUid = res.data.uid
+        })
+      if (!ctx.wxPusherBinded) {
+        this.$axios.get('https://api.farm.sheey.moe/qrcode')
+          .then((res) => {
+            ctx.wxQRCodeUrl = res.data.url
+          })
+      }
     }
   },
   methods: {
