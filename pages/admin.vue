@@ -1,6 +1,6 @@
 <template lang="pug">
   a-layout.root-layout
-    a-layout-sider(width="200" v-model:collapsed="collapsed" style="background: #fff")
+    a-layout-sider.desktop-only(width="200" v-model:collapsed="collapsed" style="background: #fff")
       Logo(style="margin: 25%")
       a-menu(mode="inline" v-model:selectedKeys="menuSelectedKey")
         a-menu-item(key="1")
@@ -16,10 +16,27 @@
             QuestionCircleTwoTone
           span 帮助
     a-layout
+      a-drawer.nav-drawer.mobile-only(placement="left" :closable="false" :visible="drawerVisible" @close="() => drawerVisible = false")
+        template(#title)
+          Logo(style="margin: 25%")
+        a-menu(mode="inline" v-model:selectedKeys="menuSelectedKey" @select="() => drawerVisible = false")
+          a-menu-item(key="1")
+            client-only
+              SettingTwoTone
+            span 账号信息
+          a-menu-item(key="2")
+            client-only
+              SnippetsTwoTone
+            span 问卷列表
+          a-menu-item(key="3")
+            client-only
+              QuestionCircleTwoTone
+            span 帮助
       a-layout-header
         client-only
-          menu-unfold-outlined(v-if="collapsed" class="trigger" @click="() => (collapsed = !collapsed)")
-          menu-fold-outlined(v-else class="trigger" @click="() => (collapsed = !collapsed)")
+          menu-unfold-outlined.desktop-only(v-if="collapsed" class="trigger" @click="() => (collapsed = !collapsed)")
+          menu-fold-outlined.desktop-only(v-else class="trigger" @click="() => (collapsed = !collapsed)")
+          MenuOutlined.mobile-only(@click="() => drawerVisible = true")
         a-dropdown(@click.prevent)
           .user-info(style="float: right;")
             span(style="font-weight: 600; margin-right: 10px") {{ this.$auth.loggedIn ? this.$auth.user.username : "" }}
@@ -34,11 +51,11 @@
         .content-wrap.whistle-settings(v-if="menuSelectedKey == '1'")
           a-card.card.shadow(title="当前微哨账号信息")
             div(v-if="displayWhistleInfo" style="display: flex; flex-direction: row;")
-              a-avatar.large-avatar(
+              a-avatar.whistle-info-avatar.large-avatar(
                 shape="square"
                 :src="this.$auth.user ? this.$auth.user.avatar : ''"
                 :size="128") {{  displayWhistleInfo ? this.whistleUserInfo.realname.substring(0, 1) : "" }}
-              .whistle-info-wrap(style="display: inline; margin-left: 12px; width: calc(100% - 128px - 12px);")
+              .whistle-info-wrap(style="display: inline; margin-left: 12px;")
                   a-descriptions(title="账号信息")
                     a-descriptions-item(label="姓名") {{ displayWhistleInfo ? this.whistleUserInfo.realname : "" }}
                     a-descriptions-item(label="学号") {{ displayWhistleInfo ? this.whistleUserInfo.stuCode : ""}}
@@ -185,7 +202,8 @@ import {
   MenuFoldOutlined,
   CloseCircleTwoTone,
   CarryOutTwoTone,
-  CheckCircleTwoTone
+  CheckCircleTwoTone,
+  MenuOutlined
 } from '@ant-design/icons-vue'
 
 import { message, Modal } from 'ant-design-vue'
@@ -205,7 +223,8 @@ export default {
     MenuFoldOutlined,
     CloseCircleTwoTone,
     CarryOutTwoTone,
-    CheckCircleTwoTone
+    CheckCircleTwoTone,
+    MenuOutlined
   },
   data () {
     return {
@@ -247,7 +266,8 @@ export default {
       questionnaireFillHistory: [],
       wxQRCodeUrl: '',
       wxPusherBinded: false,
-      wxQRCodeUid: ''
+      wxQRCodeUid: '',
+      drawerVisible: false
     }
   },
   head () {
@@ -503,6 +523,7 @@ export default {
   margin-top: 12px;
   display: flex;
   flex-direction: column;
+  width: calc(100% - 128px - 12px);
 }
 
 .whistle-info-wrap > * {
@@ -520,7 +541,6 @@ export default {
 }
 
 .questionnaire {
-  padding: 16px;
   min-height: 100%;
 }
 
@@ -528,15 +548,37 @@ export default {
   padding: 10px;
 }
 
-@media screen and (max-width: 750px) {
+.mobile-only {
+  display: none;
+}
+
+@media screen and (max-width: 1200px) {
   .content-wrap {
     column-count: 1;
     padding: 0;
   }
 
   .card {
-    width: 100%;
+    width: calc(100% - 12px);
     margin: 6px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .whistle-info-avatar {
+    display: none;
+  }
+
+  .whistle-info-wrap {
+    width: fit-content;
+  }
+
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: unset;
   }
 }
 </style>
@@ -563,5 +605,9 @@ export default {
 
 .ant-menu-item::after {
   border-right: none !important;
+}
+
+.nav-drawer .ant-drawer-body {
+  padding: 20px 0 0 0;
 }
 </style>

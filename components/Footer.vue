@@ -38,4 +38,18 @@ export default {
   font-weight: 600;
   float: right;
 }
+
+@media screen and (max-width: 500px) {
+  .footer {
+    padding: 10px 20px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
 </style>
