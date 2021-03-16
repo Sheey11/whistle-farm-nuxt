@@ -93,7 +93,8 @@ export default {
       this.$axios.post('https://api.farm.sheey.moe/auth/register', {
         username: this.formState.userName,
         password: this.formState.password,
-        email: this.formState.email
+        email: this.formState.email,
+        inviCode: this.formState.inviCode
       })
         .then((res) => {
           message.success('注册成功, 3 秒后跳转登录页面')
