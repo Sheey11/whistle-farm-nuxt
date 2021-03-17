@@ -82,7 +82,15 @@ export default {
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
     manifest: {
-      lang: 'en'
+      name: 'Whistle Farm',
+      short_name: 'WhistleFarm',
+      description: '自动填写微哨打卡',
+      lang: 'zh'
+    },
+    meta: {
+      name: 'Whistle Farm',
+      author: 'sheey',
+      description: '自动填写微哨打卡'
     }
   },
 
