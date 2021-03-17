@@ -134,20 +134,20 @@
                               a-input(v-model:value="questionnaireAnswer[index]" placeholder="好像是个未知的问卷类型呢，试着手动输入答案吧")
                     a-button(type="primary" style="min-width: 25%; display: block; margin: 0 auto;" @click="saveQuesionnaireAnswers") 保存问卷
                   a-collapse-panel(key="3" header="自动填写配置")
-                    a-form(:label-col="{ span: 2 }" :wrapper-col="{ span: 3 }")
+                    a-form(:label-col="{ span: 2 }" :wrapper-col="{ span: 5 }")
                       a-form-item(label="开启自动填写")
-                        a-switch(v-model:value="questionnaireAutoFill")
+                        a-switch(v-model:value="questionnaireAutoFill" @change="changeEnableStatus")
                       a-form-item(label="自动填写时间")
                         span 每天早上8点（暂不支持自定义）
                   a-collapse-panel(key="4" header="填写历史")
                     a-list(item-layout="horizontal" :data-source="questionnaireFillHistory")
                       a-list-item(slot="renderItem" slot-scope="item, index" :key="index")
                         .job-detail
-                          CheckCircleTwoTone(twoToneColor="#0ed10b" v-if="item.result == 2")
+                          CheckCircleTwoTone(twoToneColor="#0ed10b" v-if="item.result == 0")
                           CloseCircleTwoTone(twoToneColor="#ff0000" v-else-if="item.result == 1")
                           span(style="margin: 0 10px;") {{ new Date(item.date).toLocaleString() }}
                           p(v-if="item.result == 1" style="margin-left: 24px; color: #aaaaaa;") {{ item.exception }}
-                          p(v-if="item.result == 2" style="margin-left: 24px; color: #aaaaaa;") 自动填写成功
+                          p(v-if="item.result == 0" style="margin-left: 24px; color: #aaaaaa;") 自动填写成功
 
           h1(v-else style="") 请先绑定微哨账号
         .content-wrap.help(v-if="menuSelectedKey == '3'")
@@ -156,6 +156,9 @@
               li
                 h1 咋用？
                 p 先绑定账号，然后在问卷列表里面选择你要填的问卷，填过一次之后就会在后面每天都帮你自动填了。
+              li
+                h1 绑定失败，请在微哨打开？
+                p 在 <a href="http://web.weishao.com.cn/login" target="_blank"> 微哨网页端 </a>登陆，至少进入打卡一次之后（在新窗口打开），再回来绑定。
               li
                 h1 绑定失败，验证码错误？
                 p 多次登录失败导致需要验证码，请在 <a href="http://web.weishao.com.cn/login" target="_blank"> 微哨网页端 </a>登陆一次，再回来绑定。
@@ -302,6 +305,32 @@ export default {
     }
   },
   methods: {
+    changeEnableStatus (checkStatus) {
+      if (checkStatus) {
+        this.$axios.post('https://api.farm.sheey.moe/whistle/autofill/enable', { qid: this.selectedQuestionnaireId })
+          .then((res) => {
+            message.success(`已保存, 将在 ${res.data.time} 填写。`)
+          })
+          .catch((e) => {
+            message.error(e.response.data.msg)
+          })
+      } else {
+        this.$axios.post('https://api.farm.sheey.moe/whistle/autofill/disable', { qid: this.selectedQuestionnaireId })
+          .then((e) => {
+            message.success('已保存')
+          })
+          .catch((e) => {
+            message.error(e.response.data.msg)
+          })
+      }
+    },
+    refreshEnableStatus () {
+      const ctx = this
+      this.$axios.get('https://api.farm.sheey.moe/whistle/autofill/status?qid=' + this.selectedQuestionnaireId)
+        .then((res) => {
+          ctx.questionnaireAutoFill = res.data.enabled
+        })
+    },
     saveQuesionnaireAnswers () {
       const ctx = this
       const ans = []
@@ -580,6 +609,10 @@ export default {
   .mobile-only {
     display: unset;
   }
+
+  .ant-layout-header {
+    padding-right: 20px;
+  }
 }
 </style>
 
@@ -609,5 +642,11 @@ export default {
 
 .nav-drawer .ant-drawer-body {
   padding: 20px 0 0 0;
+}
+
+@media screen and (max-width: 700px) {
+  .ant-modal {
+    width: 100% !important;
+  }
 }
 </style>
