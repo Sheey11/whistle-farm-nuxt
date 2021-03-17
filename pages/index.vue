@@ -4,11 +4,11 @@
       Logo(style="max-width: 50%; margin-bottom: 50px")
       a-form.login-form(:model="formState")
         a-form-item(ref="username" name="username")
-          a-input.username-input(placeholder="用户名" v-model:value="formState.userName" size="large" @change="refreshLoginButtonStatus")
+          a-input.username-input(placeholder="用户名" v-model:value="formState.userName" size="large" @change="refreshLoginButtonStatus" @pressEnter="login")
             template(slot="prefix")
                 user-outlined(type="user")
         a-form-item(ref="password")
-          a-input-password.password-input(placeholder="密码" v-model:value="formState.password" size="large" @change="refreshLoginButtonStatus")
+          a-input-password.password-input(placeholder="密码" v-model:value="formState.password" size="large" @change="refreshLoginButtonStatus" @pressEnter="login")
             template(slot="prefix")
                 lock-outlined
         a-form-item(ref="rememberme")
@@ -55,6 +55,8 @@ export default {
       this.loginButtonEnabled = usernameValid && passwordValid
     },
     async login () {
+      if (this.formState.userName === '' || this.formState.password === '') { return }
+
       try {
         this.loading = true
         await this.$auth.loginWith('local', {
