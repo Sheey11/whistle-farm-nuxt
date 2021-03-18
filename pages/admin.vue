@@ -644,6 +644,12 @@ export default {
   padding: 20px 0 0 0;
 }
 
+code {
+  background: rgb(240, 240, 240);
+  border-radius: 4px;
+  padding: 0 6px;
+}
+
 @media screen and (max-width: 700px) {
   .ant-modal {
     width: 100% !important;
