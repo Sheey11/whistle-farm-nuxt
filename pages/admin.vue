@@ -172,19 +172,19 @@
                 a(href="https://sheey.moe") sheey
               li
                 h1 你是不是傻逼啊，写这个干嘛？
-                p 学 asp 和 EFCore，另外再学点 dotnet 5.0 和 c# 9 新特性
-                p 尽量给他的请求整成 RUSTful，如果有不顺眼的欢迎交流
+                p 学 <code>asp</code> 和 <code>EFCore</code>，另外再学点 <code>dotnet 5.0</code> 和 <code>c# 9</code> 新特性
+                p 尽量给他的请求整成 <code>RUSTful</code>，如果有不顺眼的欢迎交流
                 p 你该不会真的以为这是写来填微哨的把？
               li
                 h1 技术栈？
-                p 后端是 ASP.NET Core, Entity Framework Core(Sqlite), 都是 dotnet 5.0, 反向代理用的 caddy, 跑在一台老旧的 Ubuntu 上
-                p 前端是 nuxt.js 和 ant-design-vue
-                p 图标库用的 antd 自带的和一些 font-awesome
+                p 后端是 <code>ASP.NET Core</code>, <code>Entity Framework Core(Sqlite)</code>, 都是 <code>dotnet 5.0</code>, 反向代理用的 <code>caddy</code>, 跑在一台老旧的 <code>Ubuntu</code> 上
+                p 前端是 <code>nuxt.js</code> 和 <code>ant-design-vue</code>
+                p 图标库用的 <code>antd</code> 自带的和一些 <code>font-awesome</code>
               li
-                h1 图标怎么是 nuxt 的图标？
+                h1 图标怎么是 <code>nuxt</code> 的图标？
                 p 我是懒狗
               li
-                h1 左边导航栏怎么和 antd 的不一样？
+                h1 左边导航栏怎么和 <code>antd</code> 的不一样？
                 p 他的不好看，改了，我的好看
               li
                 h1 会适配手机端吗

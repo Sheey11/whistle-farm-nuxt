@@ -93,6 +93,10 @@ export default {
       description: '自动填写微哨打卡'
     }
   },
+  loading: {
+    color: '#1890ff',
+    continuous: true
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
