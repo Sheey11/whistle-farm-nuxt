@@ -45,6 +45,11 @@ export default {
       title: 'WhistleFarm - 登陆'
     }
   },
+  mounted () {
+    if (this.$auth.loggedIn) {
+      this.$router.push('/admin')
+    }
+  },
   methods: {
     gotoRegister () {
       this.$router.push('/register')

@@ -72,6 +72,11 @@ export default {
       title: 'WhistleFarm - 注册'
     }
   },
+  mounted () {
+    if (this.$auth.loggedIn) {
+      this.$router.push('/admin')
+    }
+  },
   methods: {
     gotoLogin () {
       this.$router.push('/')
