@@ -1,5 +1,6 @@
 <template lang="pug">
   a-layout.root-layout
+    Guide(v-model="guideModalVisible" @showQuestionnairList="() => { refreshWhistleUserInfo(); menuSelectedKey = '2'; } ")
     a-layout-sider.desktop-only(width="200" v-model:collapsed="collapsed" style="background: #fff")
       Logo(style="margin: 25%")
       a-menu(mode="inline" v-model:selectedKeys="menuSelectedKey")
@@ -98,7 +99,11 @@
                 a-button(type="primary" @click="changePassword" :loading="changePasswordLoading") 修改密码
         .questionnaire(v-if="menuSelectedKey == '2'")
           a-card.card(v-if="displayWhistleInfo" title="问卷列表" style="min-height: 100%")
-            p 点击问卷来填写和查看自动填写情况
+            h4
+              | 点击问卷来填写和查看自动填写情况
+              <br/>
+              | 保存问卷后，将会在每天早上 8 点以此为模板填写问卷。
+            <br/>
             a-card.shadow(v-for="item in questionnaireData" :key="item.questionid" style="cursor: pointer;" @click="() => displayQuestionnaireInfo(item.qid)")
               CarryOutTwoTone
               span(style="margin-left: 6px;") {{ item.title }}
@@ -270,7 +275,8 @@ export default {
       wxQRCodeUrl: '',
       wxPusherBinded: false,
       wxQRCodeUid: '',
-      drawerVisible: false
+      drawerVisible: false,
+      guideModalVisible: false
     }
   },
   head () {
@@ -303,6 +309,8 @@ export default {
           })
       }
     }
+
+    this.guideModalVisible = !this.displayWhistleInfo
   },
   methods: {
     changeEnableStatus (checkStatus) {
@@ -481,7 +489,7 @@ export default {
         })
     },
     saveWhistleCredential () {
-      if (this.whistleUsername.length < 5 || this.whistlePassword < 5) {
+      if (this.whistleUsername.length < 5 || this.whistlePassword.length < 5) {
         message.error('能不能认真点啊')
       } else {
         this.whistleCredentialSaving = true
