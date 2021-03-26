@@ -317,7 +317,7 @@ export default {
       if (checkStatus) {
         this.$axios.post('https://api.farm.sheey.moe/whistle/autofill/enable', { qid: this.selectedQuestionnaireId })
           .then((res) => {
-            message.success(`已保存, 将在 ${res.data.time} 填写。`)
+            message.success(`已保存, 将在 ${res.data.time} 填写。`, 3)
           })
           .catch((e) => {
             message.error(e.response.data.msg)
@@ -386,10 +386,10 @@ export default {
           answers: ans
         })
           .then((res) => {
-            message.success('已保存')
+            message.success(`已保存, 下一次将在 ${res.data.time} 填写。`, 3)
             resolve()
           }).catch((e) => {
-            message.success('保存失败: ' + e.response.data.msg)
+            message.success('保存失败: ' + e.response.data.msg, 3)
             reject(e)
           })
       })
@@ -505,7 +505,7 @@ export default {
           })
           .catch((e) => {
             if (e.response.data) {
-              message.error('微哨登录失败: ' + e.response.data.msg)
+              message.error('微哨登录失败: ' + e.response.data.msg, 3)
             } else {
               message.error(e.message)
             }
