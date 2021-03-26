@@ -145,7 +145,7 @@
                       a-form-item(label="自动填写时间")
                         span 每天早上8点（暂不支持自定义）
                   a-collapse-panel(key="4" header="填写历史")
-                    a-list(item-layout="horizontal" :data-source="questionnaireFillHistory")
+                    a-list(item-layout="horizontal" :data-source="questionnaireFillHistory" :pagination="{ pageSize: 5 }" position="bottom")
                       a-list-item(slot="renderItem" slot-scope="item, index" :key="index")
                         .job-detail
                           CheckCircleTwoTone(twoToneColor="#0ed10b" v-if="item.result == 0")
@@ -291,7 +291,7 @@ export default {
   },
   mounted () {
     if (!this.$auth.loggedIn) {
-      this.$router.push('/')
+      this.$router.push('/login')
     } else {
       const ctx = this
 
@@ -430,7 +430,7 @@ export default {
       }).then((resolve, reject) => {
         this.$axios.get('https://api.farm.sheey.moe/whistle/autofill/results?qid=' + qid)
           .then((res) => {
-            ctx.questionnaireFillHistory = res.data.result
+            ctx.questionnaireFillHistory = res.data.result.reverse()
             resolve()
           })
       }).then((resolve, reject) => {
@@ -442,7 +442,7 @@ export default {
     },
     logout () {
       this.$auth.logout()
-      this.$router.push('/')
+      this.$router.push('/login')
     },
     refreshWhistleUserInfo () {
       const ctx = this

@@ -1,33 +1,23 @@
 <template lang="pug">
   .container
-    .intro
-      Logo(style="margin-bottom: 20px")
-      h2(style="margin: 20px 0") 欢迎使用微哨农场？
-      p 微哨农场是一个
-      ul
-        li 全自动化填写和管理微哨的平台。
-      p 它能够
-      ul
-        li 全自动化填写。
-        li 自助启用、禁用。
-        li 每天通过微信消息推送填写状态。
-      p 如何使用/怎么使用？
-      ol
-        li
-          NuxtLink(to="/register") 注册
-          span 一个账号。
-        li 绑定微哨账号。
-        li 填写模板并保存。
-        li (可选)绑定微信接收消息通知。
-      p 会收费吗？
-      ul
-        li 不会收费。
-        li 以后会通过邀请码制度限制注册。
-      .action-btns
-        a-button.action-btn(type="primary" size="large")
-          NuxtLink(to="/register") 注册
-        a-button.action-btn(size="large")
-          NuxtLink(to="/login") 登陆
+    a-card.login-card(title="登录到微哨农场")
+      Logo(style="max-width: 50%; margin-bottom: 50px")
+      a-form.login-form(:model="formState")
+        a-form-item(ref="username" name="username")
+          a-input.username-input(placeholder="用户名" v-model:value="formState.userName" size="large" @change="refreshLoginButtonStatus" @pressEnter="login")
+            template(slot="prefix")
+                user-outlined(type="user")
+        a-form-item(ref="password")
+          a-input-password.password-input(placeholder="密码" v-model:value="formState.password" size="large" @change="refreshLoginButtonStatus" @pressEnter="login")
+            template(slot="prefix")
+                lock-outlined
+        a-form-item(ref="rememberme")
+          a-checkbox(v-model:checked="formState.rememberme" style="float: left") 记住我
+          a(style="float: right; margin-right: 0") 忘记密码
+        a-form-item
+          a-button(type="primary" style="width: 100%; margin-top: 20px" size="large" :disabled="!loginButtonEnabled" @click="login" :loading="loading") 登陆
+          a-button(type="link" style="width: 100%; margin-top: 0" @click="gotoRegister") 注册账号
+      FooterMini
 </template>
 
 <script>
@@ -105,48 +95,47 @@ export default {
   padding-bottom: 100px;
 }
 
-.intro {
-  padding: 20px 150px;
+.login-card {
+  height: fit-content;
+  width: 600px;
+  text-align: center;
 }
 
-.action-btns {
-  margin: 0 -50px;
-  margin-top: 30px;
-  display: flex;
-  justify-content: space-between;
-  width: calc(100% + 100px);
+.login-form {
+  padding: 0 125px 30px 125px;
+  text-align: left;
 }
 
-.action-btn {
-  width: 45%;
+.login-form > * {
+  margin: 10px;
+}
+
+.intro-wrap {
+  margin-left: 20px;
 }
 
 @media screen and (max-width: 700px) {
-  .intro {
-    padding: 20px 100px;
+  .container {
+    flex-direction: column-reverse;
   }
 }
 
 @media screen and (max-width: 500px) {
+  .login-form {
+    padding: 0 50px 30px 50px;
+    text-align: left;
+  }
+
   .container {
     padding: 0;
     margin: auto;
   }
-
-  .intro {
-    padding: 20px 50px;
-  }
 }
 
-@media screen and (max-width: 350px) {
-  .intro {
-    padding: 20px 20px;
-  }
-
-  .action-btns {
-    margin: 0 -10px;
-    margin-top: 30px;
-    width: calc(100% + 20px);
+@media screen and (max-width: 400px) {
+  .login-form {
+    padding: 0 0 30px 0;
+    text-align: left;
   }
 }
 </style>

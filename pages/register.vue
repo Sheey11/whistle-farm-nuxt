@@ -79,7 +79,7 @@ export default {
   },
   methods: {
     gotoLogin () {
-      this.$router.push('/')
+      this.$router.push('/login')
     },
     showModel () {
       this.touModalVisible = true
@@ -104,7 +104,7 @@ export default {
         .then((res) => {
           message.success('注册成功, 3 秒后跳转登录页面')
           setTimeout(() => {
-            this.$router.push('/')
+            this.$router.push('/login')
           }, 3000)
         })
         .catch((e) => {
