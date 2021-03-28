@@ -11,6 +11,11 @@ import { HeartTwoTone } from '@ant-design/icons-vue'
 export default {
   components: {
     HeartTwoTone
+  },
+  data () {
+    return {
+      spin: false
+    }
   }
 }
 </script>

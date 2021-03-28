@@ -1,6 +1,6 @@
 <template lang="pug">
-  a-modal(v-model:visible="modalVisiable" width="1000px" title="欢迎来到微哨农场" :footer="null" :maskClosable="false")
-    a-steps(:current="stepId" type="navigation")
+  a-modal.guide-modal(v-model:visible="modalVisiable" title="欢迎来到微哨农场" :footer="null" :maskClosable="false")
+    a-steps.bind-steps(:current="stepId" type="navigation")
       a-step
         template(#title) 欢迎
       a-step(title="绑定微哨账号")
@@ -12,16 +12,16 @@
         h3(style="margin-top: 24px") 这个教程将带你完成打卡设置。
         a-button(type="primary" @click="() => stepId = 1" size="large" style="margin-top: 20px; width: 100px;") 开始
       .whistle-account(v-else-if="stepId === 1")
-        div(style="width: 50%")
+        div.bind-form
           a-form(layout="horizontal" :label-col="{ span: 8 }" :wrapper-col="{ span: 15 }" style="height: fit-content;")
-            a-form-item(label="用户名/学号" required)
+            a-form-item(label="微哨用户名/学号" required)
               a-input(v-model="whistleUsername")
-            a-form-item(label="密码" required)
+            a-form-item(label="微哨密码" required)
               a-input-password(v-model="whistlePassword")
             a-form-item(:wrapper-col="{ span: 15, offset: 8 }")
               a-button(type="primary" @click="saveWhistleCredential" :loading="whistleCredentialSaving") {{ this.saveWhistleCredentialText }}
         .split
-        div(style="width: calc(50% - 11px); margin-left: 10px")
+        div.bind-faq
           h2 常见绑定问题
           ul
             li
@@ -126,6 +126,15 @@ export default {
   align-items: center;
 }
 
+.bind-form {
+  width: 50%;
+}
+
+.bind-faq {
+  width: calc(50% - 11px);
+  margin-left: 10px;
+}
+
 .split {
   height: 175px;
   width: 0.5px;
@@ -134,5 +143,70 @@ export default {
 
 .questionnaire-fill {
   margin: auto;
+}
+
+@media screen and (max-width: 1000px) {
+  .split {
+    height: 0.5px;
+    width: 60%;
+    background: #ddd;
+  }
+
+  .bind-form {
+    width: 100%;
+  }
+
+  .bind-faq {
+    width: 60%;
+    margin: 20px 0 0 0;
+  }
+
+  .content {
+    height: fit-content;
+  }
+
+  .whistle-account {
+    flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .bind-faq {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .questionnaire-fill::before {
+    content: "填写打卡信息";
+    font-size: 24px;
+    display: flex;
+    margin-top: -24px;
+    margin-bottom: 24px;
+  }
+
+  .bind-form::before {
+    content: "绑定微哨账号";
+    font-size: 24px;
+    display: flex;
+    margin-top: -24px;
+    margin-bottom: 24px;
+  }
+
+  .bind-steps {
+    display: none;
+  }
+}
+</style>
+
+<style>
+.guide-modal .ant-modal {
+  width: 1000px !important;
+}
+
+@media screen and (max-width: 1000px) {
+  .guide-modal .ant-modal {
+    width: 100% !important;
+  }
 }
 </style>

@@ -119,7 +119,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .container {
   margin: 0 auto;
   min-height: 100vh;
@@ -160,12 +160,22 @@ code {
   padding: 0 6px;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 600px) {
+  .register-card {
+    width: 100%;
+  }
+
   .register-form {
     padding: 0 50px 30px 50px;
     text-align: left;
   }
 
+  .ant-card-bordered {
+    border: none;
+  }
+}
+
+@media screen and (max-width: 500px) {
   .container {
     padding: 0;
     margin: auto;

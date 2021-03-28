@@ -84,7 +84,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .container {
   margin: 0 auto;
   min-height: 100vh;
@@ -120,12 +120,22 @@ export default {
   }
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 600px) {
+  .login-card {
+    width: 100%;
+  }
+
   .login-form {
     padding: 0 50px 30px 50px;
     text-align: left;
   }
 
+  .ant-card-bordered {
+    border: none;
+  }
+}
+
+@media screen and (max-width: 500px) {
   .container {
     padding: 0;
     margin: auto;
